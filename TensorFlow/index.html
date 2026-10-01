@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Processing & Object Detection</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- TensorFlow.js & COCO-SSD Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js" integrity="" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js" integrity="" crossorigin="anonymous"></script>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js" integrity="" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js" integrity="" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <div class="container">
+        <div class="app-frame">
+            <div class="topbar">
+                <div class="brand-wrap">
+                    <span class="dot green"></span>
+                    <span class="brand-text">AI Inventory Scanner</span>
+                </div>
+                <div class="status-group">
+                    <span id="db-status" class="status-badge demo">MEMUAT...</span>
+                </div>
+            </div>
+
+            <div class="viewer-shell">
+                <div id="camera-container">
+                    <video id="video" autoplay playsinline muted></video>
+                    <canvas id="canvas"></canvas>
+                    <div id="overlay-msg">
+                        <div class="spinner"></div>
+                        <p id="overlay-text">Memulai Sistem...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn success" onclick="startCamera()">Start Camera</button>
+                <button class="btn danger" onclick="stopCamera()">Stop Camera</button>
+                <button class="btn danger" onclick="stopAI()">Stop AI</button>
+            </div>
+
+            <div class="dashboard-grid">
+                <div id="data-section" class="log-panel">
+                    <div id="data-header">
+                        <span>Detected Objects Log</span>
+                        <span id="log-count">0 items</span>
+                    </div>
+
+                    <div id="data-list">
+                        <div class="empty-state">Menunggu deteksi objek...</div>
+                    </div>
+                </div>
+
+                <div class="side-panel">
+                    <div id="resultBox" class="result-box">
+                        Belum ada objek terdeteksi.
+                    </div>
+
+                    <div class="stats-panel">
+                        <div class="stat-card">
+                            <span>Total Deteksi</span>
+                            <strong id="total-detections">0</strong>
+                        </div>
+                        <div class="stat-card">
+                            <span>Wajah</span>
+                            <strong id="face-count">0</strong>
+                        </div>
+                        <div class="stat-card">
+                            <span>Objek</span>
+                            <strong id="object-count">0</strong>
+                        </div>
+                    </div>
+
+                    <section class="face-analytics" aria-labelledby="face-analytics-title">
+                        <div class="analytics-heading">
+                            <div>
+                                <h2 id="face-analytics-title">Face tracking</h2>
+                                <p>Landmark position and live presence</p>
+                            </div>
+                            <span id="face-chart-status" class="face-live-status">WAITING</span>
+                        </div>
+                        <div class="face-table-wrap">
+                            <table class="face-table">
+                                <thead>
+                                    <tr>
+                                        <th>Wajah</th>
+                                        <th>X</th>
+                                        <th>Y</th>
+                                        <th>Dimensi</th>
+                                        <th>Jarak</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="face-table-body">
+                                    <tr><td colspan="5">Menunggu wajah...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="face-chart-head">
+                            <span>Wajah terdeteksi per detik</span>
+                            <strong id="face-chart-current">0</strong>
+                        </div>
+                        <canvas id="face-chart" aria-label="Grafik jumlah wajah terdeteksi per detik">Grafik jumlah wajah terdeteksi per detik.</canvas>
+                        <div class="face-chart-axis"><span>30 detik lalu</span><span>Sekarang</span></div>
+                    </section>
+
+                    <div class="chart-wrapper">
+                        <table class="stats-table">
+                            <thead>
+                                <tr>
+                                    <th>Kategori</th>
+                                    <th>Jumlah</th>
+                                    <th>Chart</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stats-body">
+                                <tr><td colspan="3">Belum ada data</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panggil Script Utama -->
+    <script src="db.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
